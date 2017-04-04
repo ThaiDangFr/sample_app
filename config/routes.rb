@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+
+#trouve le /contact et le route vers l'action contact du controleur pages
+
+match '/contact', to: 'pages#contact', via: [:get]
+match '/about', to: 'pages#about', via: [:get]
+match '/help', to: 'pages#help', via: [:get]
+root :to => 'pages#home'
+
+
   get 'pages/home'
 
   get 'pages/contact'
