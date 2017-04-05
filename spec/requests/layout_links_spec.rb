@@ -23,6 +23,10 @@ RSpec.describe "LayoutLinks", type: :request do
         expect(response).to have_http_status(:success)
         end
 
+	it "devrait avoir une page d'inscription à '/signup'" do
+	get '/signup'
+	expect(response).to have_http_status(:success)
+	end
 
 
 #    it "works! (now write some real specs)" do
