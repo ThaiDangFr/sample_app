@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
+#  get 'sessions/new'
+
   resources :users
-#  get 'users/new'
-match '/signup', to: 'users#new', via: [:get]
+	resources :sessions, :only => [:new, :create, :destroy]
+
+	match '/signup', to: 'users#new', via: [:get]
+	match '/signin',  to: 'sessions#new', via: [:get]
+	match '/signout', to: 'sessions#destroy', via: [:delete]
 
 #trouve le /contact et le route vers l'action contact du controleur pages
 
