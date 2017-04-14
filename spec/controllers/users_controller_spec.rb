@@ -116,7 +116,7 @@ RSpec.describe UsersController, type: :controller do
 			end
 
 			it "devrait identifier l'utilisateur" do
-				post :create, :user => @attr
+				post :create, params: {user: @attr}
 				expect(controller).to be_signed_in
 			end
 		end
