@@ -47,6 +47,27 @@ RSpec.describe UsersController, type: :controller do
 			get :new
 			expect(response.body).to have_selector("title", text: "Inscription", visible: false)
   	end 
+	
+		it "devrait avoir un champ nom" do
+			get :new
+			expect(response.body).to have_selector("input[name='user[nom]'][type='text']")
+		end
+
+		it "devrait avoir un champ email" do
+			get :new
+			expect(response.body).to have_selector("input[name='user[email]'][type='text']")
+		end
+
+		it "devrait avoir un champ mot de passe" do
+			get :new
+			expect(response.body).to have_selector("input[name='user[password]'][type='password']")
+		end
+
+		it "devrait avoir un champ confirmation du mot de passe" do
+			get :new
+			expect(response.body).to have_selector("input[name='user[password_confirmation]'][type='password']")
+		end
+
   end
 
 	describe "POST 'create'" do
