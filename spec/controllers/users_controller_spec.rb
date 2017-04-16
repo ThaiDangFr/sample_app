@@ -122,7 +122,67 @@ RSpec.describe UsersController, type: :controller do
 		end
 	end
 
+	describe "GET 'edit'" do
+		before(:each) do
+			@user = FactoryGirl.create(:user)
+			test_sign_in(@user)
+		end
 
+		it "devrait reussir" do
+			get :edit, params: { id:  @user }
+			expect(response).to be_success
+		end
 
+		it "devrait avoir le bon titre" do
+			get :edit, params: { id: @user }
+			expect(response.body).to have_selector("title", text: "Edition profil", visible: false)
+		end
 
+		it "devrait avoir un lien pour changer l'image gravatar" do
+			get :edit, params: { id: @user}
+			gravatar_url = "http://gravatar.com/emails"
+			expect(response.body).to have_link("changer", href: gravatar_url)
+		end
+	end
+
+	describe "PUT 'update'" do
+		before(:each) do
+			@user = FactoryGirl.create(:user)
+			test_sign_in(@user)
+		end
+
+		describe "Echec" do
+			before(:each) do
+				@attr = { :email => "", :nom => "", :password => "", :password_confirmation => "" }
+			end
+
+			it "devrait retourner la page d'edition" do
+				put :update, params: { id: @user, user: @attr }
+				expect(response).to render_template('edit')
+			end
+		end
+
+		describe "Succes" do
+			before(:each) do
+				@attr = { :nom => "New Name", :email => "user@example.org", :password => "barbaz", :password_confirmation => "barbaz" }
+			end
+
+			it "devrait modifier les caracteristiques de l'utilisateur" do
+				put :update, params: { id: @user, user: @attr}
+				@user.reload
+				expect(@user.nom).to eq(@attr[:nom])
+				expect(@user.email).to eq(@attr[:email])
+			end
+
+			it "devrait rediriger vers la page d'affichage de l'utilisateur" do
+				put :update, params: {id: @user, user: @attr}
+				expect(response).to redirect_to(user_path(@user))
+			end
+
+			it "devrait afficher un message flash" do
+				put :update, params: {id: @user, user: @attr}
+				expect(flash[:success]).to match(/actualisé/)
+			end
+		end
+	end
 end
