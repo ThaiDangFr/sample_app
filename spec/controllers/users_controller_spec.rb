@@ -276,7 +276,40 @@ RSpec.describe UsersController, type: :controller do
 				expect(response).to redirect_to(root_path)
 			end
 		end
+	end
 
+	describe "DELETE 'destroy'" do
+		before(:each) do
+			@user = FactoryGirl.create(:user)
+		end
+		describe "en tant qu'utilisateur non identifié" do
+			it "devrait refuser l'accès" do
+				delete :destroy, params: {id:@user}
+				expect(response).to redirect_to(signin_path)
+			end
+		end
+		describe "en tant qu'utilisateur non administrateur" do
+			it "devrait protéger la page" do
+				test_sign_in(@user)
+				delete :destroy, params: {id:@user}
+				expect(response).to redirect_to(root_path)
+			end
+		end
+		describe "en tant qu'administrateur" do
+			before(:each) do
+				admin = FactoryGirl.create(:user, :email => "admin@example.com", :admin => true)
+				test_sign_in(admin)
+			end
+			it "devrait détruire l'utilisateur" do
+				expect(lambda do
+					delete :destroy, params: {id:@user}
+				end).to change(User,:count).by(-1)
+			end
+			it "devrait rediriger vers la page des utilisateurs" do
+				delete :destroy, params: {id:@user}
+				expect(response).to redirect_to(users_path)
+			end
+		end
 	end
 	
 end
