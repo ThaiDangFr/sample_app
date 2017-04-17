@@ -185,4 +185,41 @@ RSpec.describe UsersController, type: :controller do
 			end
 		end
 	end
+
+	describe "authentification des pages edit/update" do
+		before(:each) do
+			@user = FactoryGirl.create(:user)
+		end
+
+		describe "pour un utilisateur non identifié" do
+			it "devrait refuser l'accès à l'action 'edit'" do
+				get :edit, params: {id:@user}
+				expect(response).to redirect_to(signin_path)
+			end
+
+			it "devrait refuser l'accès à l'action 'update'" do
+				put :update, params: {id:@user, user:{}}
+				expect(response).to redirect_to(signin_path)
+			end
+		end
+
+		describe "pour un utilisateur identifié" do
+			before(:each) do
+				wrong_user = FactoryGirl.create(:user, :email => "user@example.net")
+				test_sign_in(wrong_user)
+			end
+
+			it "devrait correspondre à l'utilisateur à éditer" do
+				get :edit, params:{id:@user}
+				expect(response).to redirect_to(root_path)
+			end
+
+			it "devrait correspondre à l'utilisateur à actualiser" do
+				put :update, params:{id:@user,user:{}}
+				expect(response).to redirect_to(root_path)
+			end
+		end
+
+	end
+	
 end

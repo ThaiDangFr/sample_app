@@ -21,6 +21,14 @@ module SessionsHelper
 		self.current_user = nil
 	end
 
+	def current_user?(user)
+		user == current_user
+	end
+
+	def deny_access
+		redirect_to signin_path, :notice => "Merci de vous identifier pour rejoindre cette page"
+	end
+
 
 	private
 
