@@ -52,7 +52,7 @@ RSpec.describe "liens du layout", type: :request do
 
 		it "devrait avoir un lien vers le profil" do
 			visit root_path	
-			expect(page.find_link("Profil")[:href]).to eq(edit_user_path(@user))
+			expect(page.find_link("Profil")[:href]).to eq(user_path(@user))
 		end
 
 	end

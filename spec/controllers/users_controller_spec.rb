@@ -4,6 +4,63 @@ include Capybara::RSpecMatchers
 RSpec.describe UsersController, type: :controller do
 	render_views
 
+	describe "get 'index'" do
+		describe "pour utilisateur non identifiés" do
+			it "devrait refuser l'accès" do
+				get :index
+				expect(response).to redirect_to(signin_path)
+				expect(flash[:notice]).to match(/identifier/i)
+			end
+		end
+
+		describe "pour un utilisateur identifié" do
+			before(:each) do
+				@user = test_sign_in(FactoryGirl.create(:user))
+				second = FactoryGirl.create(:user, :email => "another@example.com")
+				third = FactoryGirl.create(:user, :email => "another@example.net")
+				@users = [@user, second, third]
+				30.times do
+					@users << FactoryGirl.create(:user, :email => FactoryGirl.generate(:email))
+				end
+			end
+	
+			it "devrait reussir" do
+				get :index
+				expect(response).to be_success
+			end
+
+			it "devrait avoir le bon titre" do
+				get :index
+				expect(response.body).to have_selector("title", text: "Simple App du Tutoriel Ruby on Rails | Tous les utilisateurs", visible:false)
+			end
+
+			it "devrait avoir un élément pour chaque utilisateur" do
+				get :index
+				@users.each do |user|
+					expect(response.body).to have_selector("li", text: user.nom)
+				end
+			end
+
+			it "devrait avoir un élément pour chaque utilisateur" do
+				get :index
+				@users[0..2].each do |user|
+					expect(response.body).to have_selector("li", :text => user.nom)
+				end
+			end
+
+			it "devrait paginer les utilisateurs" do
+				get :index
+				expect(response.body).to have_selector("div.pagination")
+				expect(response.body).to have_selector("span.disabled", :text => "Previous")
+				expect(response.body).to have_link("2", :href => "/users?page=2")
+				expect(response.body).to have_link("Next", :href => "/users?page=2")
+			end
+
+		end
+
+	end
+
+
 	describe "get 'show'" do
 		before(:each) do
 			@user = FactoryGirl.create(:user)
