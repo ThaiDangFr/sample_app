@@ -48,8 +48,13 @@ class UsersController < ApplicationController
 	end
 
 	def destroy
-		User.find(params[:id]).destroy
-		flash[:success] = "Utilisateur supprimé."
+		@user = User.find(params[:id])
+		if @user.admin?
+			flash[:error] = "Un administrateur ne peut être supprimé."
+		else
+			@user.destroy
+			flash[:success] = "Utilisateur supprimé."
+		end
 		redirect_to users_path
 	end
 

@@ -297,8 +297,8 @@ RSpec.describe UsersController, type: :controller do
 		end
 		describe "en tant qu'administrateur" do
 			before(:each) do
-				admin = FactoryGirl.create(:user, :email => "admin@example.com", :admin => true)
-				test_sign_in(admin)
+				@admin = FactoryGirl.create(:user, :email => "admin@example.com", :admin => true)
+				test_sign_in(@admin)
 			end
 			it "devrait détruire l'utilisateur" do
 				expect(lambda do
@@ -308,6 +308,11 @@ RSpec.describe UsersController, type: :controller do
 			it "devrait rediriger vers la page des utilisateurs" do
 				delete :destroy, params: {id:@user}
 				expect(response).to redirect_to(users_path)
+			end
+			it "ne devrait pas détruire l'administrateur" do
+				expect(lambda do
+					delete :destroy, params: {id:@admin}
+				end).to_not change(User,:count)
 			end
 		end
 	end
