@@ -211,4 +211,15 @@ RSpec.describe User, type: :model do
         end
     end
 
+    describe "relationships" do
+        before(:each) do
+            @user = User.create!(@attr)
+            @followed = FactoryGirl.create(:user)
+        end
+
+        it "devrait avoir une méthode relashionships" do
+            expect(@user).to respond_to(:relationships)
+        end
+    end
+
 end

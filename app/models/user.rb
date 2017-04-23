@@ -14,6 +14,7 @@ require 'digest'
 class User < ApplicationRecord
     attr_accessor :password
     has_many :microposts, :dependent => :destroy
+    has_many :relationships, :foreign_key => "follower_id", :dependent => :destroy
 
     email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
