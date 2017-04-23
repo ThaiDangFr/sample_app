@@ -193,6 +193,22 @@ RSpec.describe User, type: :model do
                 expect(Micropost.find_by_id(micropost.id)).to be_nil
             end
         end
+
+        describe "Etat de l'alimentation" do
+            it "devrait avoir une méthode feed" do
+                expect(@user).to respond_to(:feed)
+            end
+
+            it "devrait inclure les micro messages de l'utilisateur" do
+                expect(@user.feed.include?(@mp1)).to be true
+                expect(@user.feed.include?(@mp2)).to be true
+            end
+    
+            it "ne devrait pas inclure les micro messages d'un autre utilisateur" do
+                mp3 = FactoryGirl.create(:micropost, :user => FactoryGirl.create(:user, :email => FactoryGirl.generate(:email)))
+                expect(@user.feed.include?(mp3)).to be false
+            end
+        end
     end
 
 end
