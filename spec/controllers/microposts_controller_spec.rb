@@ -60,4 +60,31 @@ describe MicropostsController do
         end
 
     end
+
+    describe "DELETE destroy" do
+        describe "pour un utilisateur non auteur du message" do
+            before(:each) do
+                @user = FactoryGirl.create(:user)
+                wrong_user = FactoryGirl.create(:user, :email => FactoryGirl.generate(:email))
+                test_sign_in(wrong_user)
+                @micropost = FactoryGirl.create(:micropost, :user => @user)
+            end
+            it "devrait refuser la suppression du message" do
+                delete :destroy, params: {id:@micropost}
+                expect(response).to redirect_to(root_path)
+            end
+        end
+        describe "pour l'auteur du message" do
+            before(:each) do
+                @user = test_sign_in(FactoryGirl.create(:user))
+                @micropost = FactoryGirl.create(:micropost, :user => @user)
+            end
+
+            it "devrait détruire le micro-message" do
+                expect(lambda do
+                    delete :destroy, params: { id:@micropost }
+                end).to change(Micropost, :count).by(-1)
+            end
+        end
+    end
 end
