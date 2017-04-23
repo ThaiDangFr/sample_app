@@ -7,7 +7,7 @@
         <span class="user">
             <%= link_to feed_item.user.nom, feed_item.user %>
         </span>
-        <span class="content"><%= feed_item.content %></span>
+        <span class="content"><%= wrap(feed_item.content) %></span>
         <span class="timestamp">
             Posté il y a <%= time_ago_in_words(feed_item.created_at) %>.
         </span>
