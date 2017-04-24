@@ -220,6 +220,51 @@ RSpec.describe User, type: :model do
         it "devrait avoir une méthode relashionships" do
             expect(@user).to respond_to(:relationships)
         end
+
+        it "devrait posséder une méthode following" do
+            expect(@user).to respond_to(:following)
+        end
+
+        it "devrait avoir une méthode following?" do
+            expect(@user).to respond_to(:following?)
+        end
+
+        it "devrait avoir une méthode follow!" do
+            expect(@user).to respond_to(:follow!)
+        end
+
+        it "devrait suivre un autre utilisateur" do
+            @user.follow!(@followed)
+            expect(@user).to be_following(@followed)
+        end
+
+       it "devrait inclure l'utilisateur suivi dans la liste following" do
+            @user.follow!(@followed)
+            expect(@user.following).to include(@followed)
+        end 
+
+        it "devrait avoir une méthode unfollow!" do
+            expect(@followed).to respond_to(:unfollow!)
+        end
+
+        it "devrait arrêter de suivre un utilisateur" do
+            @user.follow!(@followed)
+            @user.unfollow!(@followed)
+            expect(@user).to_not be_following(@followed)
+        end
+
+        it "devrait avoir une méthode reverse_relationship" do
+            expect(@user).to respond_to(:reverse_relationships)
+        end
+
+        it "devrait avoir une méthode followers" do
+            expect(@user).to respond_to(:followers)
+        end
+
+        it "devrait inclure le lecteur dans le tableau des lecteurs" do
+            @user.follow!(@followed)
+            expect(@followed.followers).to include(@user)
+        end
     end
 
 end

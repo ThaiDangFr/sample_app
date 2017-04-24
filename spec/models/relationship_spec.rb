@@ -32,4 +32,16 @@ describe Relationship do
             expect(@relationship.followed).to eq(@followed)
         end
     end
+
+    describe "validations" do
+        it "devrait exiger un attribut follower_id" do
+            @relationship.follower_id = nil
+            expect(@relationship).to_not be_valid
+        end
+
+        it "devrait exiger un attribut followed_id" do
+            @relationship.followed_id = nil
+            expect(@relationship).to_not be_valid
+        end
+    end
 end
