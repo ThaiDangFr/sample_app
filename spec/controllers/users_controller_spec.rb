@@ -325,4 +325,36 @@ RSpec.describe UsersController, type: :controller do
         end
     end
     
+
+    describe "les pages de suivi" do
+        describe "quand pas identifié" do
+            it "devrait protéger les auteurs suivis" do
+                get :following, params: {:id => 1}
+                expect(response).to redirect_to(signin_path)
+            end
+
+            it "devrait protéger les lecteurs" do
+                get :followers, params: {:id => 1}
+                expect(response).to redirect_to(signin_path)
+            end
+        end
+
+        describe "quand identifié" do
+            before(:each) do
+                @user = test_sign_in(FactoryGirl.create(:user))
+                @other_user = FactoryGirl.create(:user, :email => FactoryGirl.generate(:email))
+                @user.follow!(@other_user)
+            end
+
+            it "devrait afficher les auteurs suivis par l'utilisateur" do
+                get :following, params: { id:@user }
+                expect(response.body).to have_link(@other_user.nom, href: user_path(@other_user))
+            end
+
+            it "devrait afficher les lecteurs de l'utilisateur" do
+                get :followers, params: { id:@other_user }
+                expect(response.body).to have_link(@user.nom, href: user_path(@user))
+            end
+        end
+    end    
 end

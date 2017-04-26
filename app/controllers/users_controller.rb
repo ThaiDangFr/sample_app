@@ -1,8 +1,24 @@
 class UsersController < ApplicationController
-    before_action :authenticate, :only => [:index, :edit, :update, :destroy]
+    #before_action :authenticate, :only => [:index, :edit, :update, :destroy]
+    before_action :authenticate, :except => [:show, :new, :create]
     before_action :correct_user, :only => [:edit, :update]
     before_action :admin_user,   :only => :destroy
     before_action :protect_new_create, :only => [:new, :create]
+
+
+    def following
+        @titre = "Following"
+        @user = User.find(params[:id])
+        @users = @user.following.paginate(:page => params[:page])
+        render 'show_follow'
+    end
+
+    def followers
+        @titre = "Followers"
+        @user = User.find(params[:id])
+        @users = @user.followers.paginate(:page => params[:page])
+        render 'show_follow'
+    end
 
     def index
         @titre = "Tous les utilisateurs"
