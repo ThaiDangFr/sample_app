@@ -26,6 +26,13 @@ describe RelationshipsController do
                 expect(response).to be_redirect
             end).to change(Relationship, :count).by(1)
         end
+
+        it "devrait créer une relation en utilisant Ajax" do
+            expect(lambda do
+                post :create, params: { :relationship => { :followed_id => @followed } }, xhr:true
+                expect(response).to be_success
+            end).to change(Relationship, :count).by(1)
+        end
     end
 
     describe "delete destroy" do
@@ -40,6 +47,13 @@ describe RelationshipsController do
             expect(lambda do
                 delete :destroy, params: {id:@relationship}
                 expect(response).to be_redirect
+            end).to change(Relationship, :count).by(-1)
+        end
+
+        it "devrait détruire une relation en utilisant Ajax" do
+            expect(lambda do
+                delete :destroy, params: { :id => @relationship }, xhr:true
+                expect(response).to be_success
             end).to change(Relationship, :count).by(-1)
         end
     end
