@@ -208,6 +208,13 @@ RSpec.describe User, type: :model do
                 mp3 = FactoryGirl.create(:micropost, :user => FactoryGirl.create(:user, :email => FactoryGirl.generate(:email)))
                 expect(@user.feed.include?(mp3)).to be false
             end
+
+            it "devrait inclure les micro messages des utilisateurs suivis" do
+                followed = FactoryGirl.create(:user, :email => FactoryGirl.generate(:email))
+                mp3 = FactoryGirl.create(:micropost, :user => followed)
+                @user.follow!(followed)
+                expect(@user.feed).to include(mp3)
+            end
         end
     end
 
